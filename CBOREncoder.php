@@ -76,7 +76,7 @@ class CBOREncoder
             case "string":
                 return self::encode_string($var);
                 break;
-            case get_class($var) == "CBORByteString":
+            case get_class($var) == 'CBOR\Types\CBORByteString':
                 /**
                  * @var \CBOR\Types\CBORByteString $var
                  */

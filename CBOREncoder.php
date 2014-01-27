@@ -35,14 +35,18 @@ class CBOREncoder
         ADDITIONAL_TYPE_FLOAT16 = 25, //not support
         ADDITIONAL_TYPE_FLOAT32 = 26, //not support
         ADDITIONAL_TYPE_FLOAT64 = 27,
-        ADDITIONAL_TYPE_BREAK = 31,
-        FLOAT_64_PACK_TYPE = "d";
+        ADDITIONAL_TYPE_BREAK = 31;
 
-    private static $length_pack_type= array(
+    private static $length_pack_type = array(
         self::ADDITIONAL_TYPE_INT_UINT8 => "C",
         self::ADDITIONAL_TYPE_INT_UINT16 => "n",
         self::ADDITIONAL_TYPE_INT_UINT32 => "N",
         self::ADDITIONAL_TYPE_INT_UINT64 => null,
+    );
+
+    private static $float_pack_type = array(
+        self::ADDITIONAL_TYPE_FLOAT32 => "f",
+        self::ADDITIONAL_TYPE_FLOAT64 => "d",
     );
 
     private static $byte_length = array(
@@ -209,7 +213,7 @@ class CBOREncoder
             return $simple_association[$length_capacity];
         }
 
-        return array_shift(unpack(self::FLOAT_64_PACK_TYPE, strrev(substr($byte_string, 1, self::$byte_length[$length_capacity]))));
+        return array_shift(unpack(self::$float_pack_type[$length_capacity], strrev(substr($byte_string, 1, self::$byte_length[$length_capacity]))));
     }
 
     /**

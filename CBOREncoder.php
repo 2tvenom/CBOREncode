@@ -33,7 +33,7 @@ class CBOREncoder
         ADDITIONAL_TYPE_INT_UINT32 = 26,
         ADDITIONAL_TYPE_INT_UINT64 = 27,
         ADDITIONAL_TYPE_FLOAT16 = 25, //not support
-        ADDITIONAL_TYPE_FLOAT32 = 26, //not support
+        ADDITIONAL_TYPE_FLOAT32 = 26, //encode not support
         ADDITIONAL_TYPE_FLOAT64 = 27,
         ADDITIONAL_TYPE_BREAK = 31;
 
@@ -326,7 +326,7 @@ class CBOREncoder
         } elseif(is_double($value)) {
             //strrev - double pack not have endian byte order, need reverse string
 
-            return self::pack_init_byte($major_type, self::ADDITIONAL_TYPE_FLOAT64) . strrev(pack(self::FLOAT_64_PACK_TYPE, $value));
+            return self::pack_init_byte($major_type, self::ADDITIONAL_TYPE_FLOAT64) . strrev(pack(self::$float_pack_type[self::ADDITIONAL_TYPE_FLOAT64], $value));
         }
 
         return null;

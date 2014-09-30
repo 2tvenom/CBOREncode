@@ -1,7 +1,7 @@
 <?php
-include("src/CBOREncoder.php");
-include("src/CBORExceptions.php");
-include("src/Types/CBORByteString.php");
+include("src/CBOR/CBOREncoder.php");
+include("src/CBOR/CBORExceptions.php");
+include("src/CBOR/Types/CBORByteString.php");
 
 //target for encode
 $target = array(true, array("variable1" => 100000, "variable2" => "Hello, World!", "Hello!"), 0.234, 0, null, 590834290589032580);

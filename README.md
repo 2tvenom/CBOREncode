@@ -7,12 +7,20 @@ The [specification](http://tools.ietf.org/html/rfc7049)
 has recently been approved as an IETF Standards-Track specification
 and has been published as RFC 7049.
 
+## Installation
+Add `2tvenom/cborencode` as a requirement to composer.json:
+
+```JavaScript
+{
+    "require": {
+       "2tvenom/cborencode": "dev-master"
+    }
+}
+```
 ## Usage
 ```php
 <?php
-include("CBOREncoder.php");
-include("CBORExceptions.php");
-include("Types/CBORByteString.php");
+include("vendor/autoload.php");
 
 //target for encode
 $target = array(true, array("variable1" => 100000, "variable2" => "Hello, World!", "Hello!"), 0.234, 0, null, 590834290589032580);

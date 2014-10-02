@@ -98,8 +98,10 @@ class CBOREncoder
      */
     public static function decode(&$var){
         $out = null;
+        
         //get initial byte
-        $header_byte = array_shift(unpack("C*", substr($var, 0, 1)));
+        $unpacked = unpack("C*", substr($var, 0, 1));
+        $header_byte = array_shift($unpacked);
 
         //unpack major type
         $major_type = $header_byte & self::ADDITIONAL_WIPE;

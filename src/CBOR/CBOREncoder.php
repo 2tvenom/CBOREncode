@@ -414,7 +414,7 @@ class CBOREncoder
         return $higher << 32 | $lower;
     }
 
-    private function biging_pack($big_int)
+    private static function biging_pack($big_int)
     {
         return pack("NN", ($big_int & 0xffffffff00000000) >> 32, ($big_int & 0x00000000ffffffff));
     }

@@ -23,6 +23,7 @@ class CBOREncoder
         MAJOR_TYPE_MAP = 0b10100000, //5
         MAJOR_TYPE_TAGS = 0b11000000, //6
         MAJOR_TYPE_SIMPLE_AND_FLOAT = 0b11100000, //7
+        MAJOR_TYPE_INFINITE_CLOSE = 0xFF,
         ADDITIONAL_MAX = 23,
         ADDITIONAL_TYPE_INT_FALSE = 20,
         ADDITIONAL_TYPE_INT_TRUE = 21,
@@ -35,7 +36,7 @@ class CBOREncoder
         ADDITIONAL_TYPE_FLOAT16 = 25, //not support
         ADDITIONAL_TYPE_FLOAT32 = 26, //encode not support
         ADDITIONAL_TYPE_FLOAT64 = 27,
-        ADDITIONAL_TYPE_BREAK = 31;
+        ADDITIONAL_TYPE_INFINITE = 31;
 
     private static $length_pack_type = array(
         self::ADDITIONAL_TYPE_INT_UINT8 => "C",
@@ -103,12 +104,17 @@ class CBOREncoder
         $unpacked = unpack("C*", substr($var, 0, 1));
         $header_byte = array_shift($unpacked);
 
-        //unpack major type
-        $major_type = $header_byte & self::ADDITIONAL_WIPE;
-        //get additional_info
-        $additional_info = self::unpack_additional_info($header_byte);
-        $byte_data_offset = 1;
+        if ($header_byte == self::MAJOR_TYPE_INFINITE_CLOSE) {
+            $major_type = $header_byte;
+            $additional_info = 0;
+        } else {
+            //unpack major type
+            $major_type = $header_byte & self::ADDITIONAL_WIPE;
+            //get additional_info
+            $additional_info = self::unpack_additional_info($header_byte);
+        }
 
+        $byte_data_offset = 1;
         if(array_key_exists($additional_info, self::$byte_length)){
             $byte_data_offset += self::$byte_length[$additional_info];
         }
@@ -139,16 +145,21 @@ class CBOREncoder
             case self::MAJOR_TYPE_ARRAY:
             case self::MAJOR_TYPE_MAP:
                 $out = array();
-                $elem_count = self::decode_int($additional_info, $var);
 
+                $elem_count = $additional_info != self::ADDITIONAL_TYPE_INFINITE ?
+                    self::decode_int($additional_info, $var) : PHP_INT_MAX;
                 $var = substr($var, $byte_data_offset);
 
                 while($elem_count > count($out))
                 {
+                    $primitive = self::decode($var);
+                    if (is_null($primitive)) {
+                        break;
+                    }
                     if($major_type == self::MAJOR_TYPE_MAP) {
-                        $out[self::decode($var)] = self::decode($var);
+                        $out[$primitive] = self::decode($var);
                     } else {
-                        $out[] = self::decode($var);
+                        $out[] = $primitive;
                     }
                 }
 
@@ -159,6 +170,8 @@ class CBOREncoder
             case self::MAJOR_TYPE_SIMPLE_AND_FLOAT:
                 $out = self::decode_simple_float($additional_info, $var);
                 break;
+            case self::MAJOR_TYPE_INFINITE_CLOSE:
+                return null;
         }
 
         if(!in_array($major_type, array(self::MAJOR_TYPE_ARRAY, self::MAJOR_TYPE_MAP))){
@@ -186,7 +199,8 @@ class CBOREncoder
                 return self::biging_unpack($decoding_byte_string);
                 break;
             case array_key_exists($length_capacity, self::$length_pack_type):
-                return array_shift(unpack(self::$length_pack_type[$length_capacity], $decoding_byte_string));
+                $typed_int = unpack(self::$length_pack_type[$length_capacity], $decoding_byte_string);
+                return array_shift($typed_int);
                 break;
             default:
                 throw new CBORIncorrectAdditionalInfoException("Incorrect additional info");

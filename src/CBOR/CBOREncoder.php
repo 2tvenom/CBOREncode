@@ -171,7 +171,7 @@ class CBOREncoder
                 $out = self::decode_simple_float($additional_info, $var);
                 break;
             case self::MAJOR_TYPE_INFINITE_CLOSE:
-                return null;
+                $out = null;
         }
 
         if(!in_array($major_type, array(self::MAJOR_TYPE_ARRAY, self::MAJOR_TYPE_MAP))){
@@ -228,8 +228,8 @@ class CBOREncoder
         {
             return $simple_association[$length_capacity];
         }
-
-        return array_shift(unpack(self::$float_pack_type[$length_capacity], strrev(substr($byte_string, 1, self::$byte_length[$length_capacity]))));
+        $typed_float = unpack(self::$float_pack_type[$length_capacity], strrev(substr($byte_string, 1, self::$byte_length[$length_capacity])));
+        return array_shift($typed_float);
     }
 
     /**

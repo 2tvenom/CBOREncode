@@ -196,7 +196,7 @@ class CBOREncoder
         switch(true)
         {
             case $length_capacity == self::ADDITIONAL_TYPE_INT_UINT64:
-                return self::biging_unpack($decoding_byte_string);
+                return self::bigint_unpack($decoding_byte_string);
                 break;
             case array_key_exists($length_capacity, self::$length_pack_type):
                 $typed_int = unpack(self::$length_pack_type[$length_capacity], $decoding_byte_string);
@@ -374,7 +374,7 @@ class CBOREncoder
         //custom big int pack
         if(is_null($length))
         {
-            return self::pack_init_byte($major_type, self::ADDITIONAL_TYPE_INT_UINT64) . self::biging_pack($int);
+            return self::pack_init_byte($major_type, self::ADDITIONAL_TYPE_INT_UINT64) . self::bigint_pack($int);
         }
 
         return self::pack_init_byte($major_type, $length) . pack(self::$length_pack_type[$length], $int);
@@ -422,13 +422,13 @@ class CBOREncoder
      * @param $big_int
      * @return string
      */
-    private function biging_unpack($big_int)
+    private function bigint_unpack($big_int)
     {
         list($higher, $lower) = array_values(unpack("N2", $big_int));
         return $higher << 32 | $lower;
     }
 
-    private static function biging_pack($big_int)
+    private static function bigint_pack($big_int)
     {
         return pack("NN", ($big_int & 0xffffffff00000000) >> 32, ($big_int & 0x00000000ffffffff));
     }

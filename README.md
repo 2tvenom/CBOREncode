@@ -13,7 +13,7 @@ Add `2tvenom/cborencode` as a requirement to composer.json:
 ```JavaScript
 {
     "require": {
-       "2tvenom/cborencode": "dev-master"
+       "2tvenom/cborencode": "1.0.0"
     }
 }
 ```

@@ -422,7 +422,7 @@ class CBOREncoder
      * @param $big_int
      * @return string
      */
-    private function bigint_unpack($big_int)
+    private static function bigint_unpack($big_int)
     {
         list($higher, $lower) = array_values(unpack("N2", $big_int));
         return $higher << 32 | $lower;

@@ -1,4 +1,4 @@
-#CBOR encoder for PHP
+# CBOR encoder for PHP
 --------
 Decoder/encoder from PHP data to CBOR binary string. This code has been developed and maintained by Ven at January 2014.
 

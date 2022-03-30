@@ -1,5 +1,5 @@
 {
-    "name": "2tvenom/cborencode",
+    "name": "magento/project-community-edition",
     "type": "library",
     "description": "CBOR encoder for PHP",
     "keywords": ["cbor"],
